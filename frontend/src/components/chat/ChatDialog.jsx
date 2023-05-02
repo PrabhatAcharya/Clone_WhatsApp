@@ -1,8 +1,8 @@
 import { Dialog ,Box} from '@mui/material'
 import React from 'react'
-import Menu from './menu/Menu';
 import EmptyChat from './chat/EmptyChat';
 import styled from '@emotion/styled';
+import Menu from './menu/MenuBar';
 
 const Component = styled(Box)`
 display:flex
