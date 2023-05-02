@@ -1,6 +1,8 @@
 import { Dialog,Box, Typography, List, ListItem } from '@mui/material'
 import {qrCodeImage} from '../constants/data.js'
 import styled from "@emotion/styled";
+import {GoogleLogin} from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
 
 const dialogStyle={
     height:"95%",
@@ -39,6 +41,14 @@ font-family:inherit;
 margin-bottom:25px;
 `
 const LoginDialog = () => {
+    const onLoginSucess=(res) => {
+    //   console.log(res);
+    const decoded = jwt_decode(res.credential);
+    console.log(decoded);
+    }
+    const onLoginError = (res) => {
+        console.log('Login Failed: ' + res);
+    };
   return (
     <Dialog open={true} PaperProps={{ sx: dialogStyle }}>
       <Componenet>
@@ -53,8 +63,11 @@ const LoginDialog = () => {
             <ListItem></ListItem>
           </styledList>
         </Container>
-        <Box>
+        <Box position={{position:'relative'}}>
           <QrCode src={qrCodeImage} alt="qrcode" />
+          <Box style={{ position: "absolute",top:"50%",transform:'translateX(25%)' }}>
+            <GoogleLogin onSuccess={onLoginSucess} onError={onLoginError} />
+          </Box>
         </Box>
       </Componenet>
     </Dialog>
