@@ -1,25 +1,23 @@
-import React,{useState} from 'react'
+import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import styled from "@emotion/styled";
 
-const MenuOption =styled(MenuItem)`
-font-size: 14px;
-padding:15px 60px 5px 24px;
-color:#4a4a4a
+const MenuOption = styled(MenuItem)`
+  font-size: 14px;
+  padding: 15px 60px 5px 24px;
+  color: #4a4a4a;
+`;
 
-`
-
-function HeaderMenu() {
-
-    const [open,setOpen] =useState(null);
-    const handleClose = ()=>{
-        setOpen(null);
-    }
-    const handleClick=(e)=>{
-        setOpen(e.currentTarget);
-    }
+const HeaderMenu = ({ setOpenDrawer }) => {
+  const [open, setOpen] = useState(null);
+  const handleClose = () => {
+    setOpen(null);
+  };
+  const handleClick = (e) => {
+    setOpen(e.currentTarget);
+  };
 
   return (
     <div>
@@ -39,12 +37,19 @@ function HeaderMenu() {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuOption
+          onClick={() => {
+            setOpenDrawer(true);
+            handleClose();
+          }}
+        >
+          Profile
+        </MenuOption>
         {/* <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem> */}
       </Menu>
     </div>
   );
-}
+};
 
-export default HeaderMenu
+export default HeaderMenu;
