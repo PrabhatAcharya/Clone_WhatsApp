@@ -24,7 +24,7 @@ const Status = styled(Typography)`
   color:rgb(0,0,0,0.6);
 `;
 const RightContainer = styled(Box)`
-margin-left: auto
+margin-left: auto !important;
 &>svg{
     padding:8px;
     font-size:23px;
@@ -32,13 +32,13 @@ margin-left: auto
 }
 `
 
-const ChatHeader = () => {
+const ChatHeader = ({person}) => {
   return (
     <Header>
-      <Image src={defaultProfilePicture} alt="dp" />
+      <Image src={person.picture} alt="dp" />
       <Box>
-        <Name>Nmae</Name>
-        <Status>Online status</Status>
+        <Name>{person.name}</Name>
+        <Status>ofline</Status>
       </Box>
       <RightContainer>
         <Search/>

@@ -16,16 +16,17 @@ backgroundColor:#e9edef;
 opaacity: .6;
 `
 
-const Conversations = () => {
+const Conversations = ({text}) => {
     const [users,setUsers]=useState([]);
       const { account } = useContext(AccountContext);
     useEffect(() =>{
         const fetchData=async()=>{
            let response=await getUsers();
-           setUsers(response);
+           const filteredUsers = response.filter(user=>user.name.toLowerCase().includes(text.toLowerCase()))
+           setUsers(filteredUsers);
         }
         fetchData();
-    },[])
+    },[text])
   return (
     <Component>
     
