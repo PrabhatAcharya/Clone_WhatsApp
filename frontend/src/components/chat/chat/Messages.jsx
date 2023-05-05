@@ -1,10 +1,10 @@
-import { useContext , useState,useEffect } from "react";
+import { useContext, useState, useEffect,useRef } from "react";
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
 import Footer from "./Footer";
 import { AccountContext } from "../../../context/AccountProvider";
 import { newMessage, getMessages } from "../../../service/api.js";
-import Message from './Message.jsx'
+import Message from "./Message.jsx";
 
 const Wrapper = styled(Box)`
   background-image: url(${`https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png`});
@@ -15,13 +15,18 @@ const Componenet = styled(Box)`
   overflow-y: scroll;
 `;
 const Container = styled(Box)`
-   padding: 1px 80px;
-`
+  padding: 1px 80px;
+`;
 const Messages = ({ person, conversation }) => {
   const { account } = useContext(AccountContext);
   const [value, setValue] = useState("");
   const [message, setMessage] = useState([]);
   const [newMessageFlag, setNewMessageFlag] = useState(false);
+
+  const scrollRef=useRef();
+
+  const [file, setFile] = useState();
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     const getMessageDetails = async () => {
@@ -32,20 +37,38 @@ const Messages = ({ person, conversation }) => {
     conversation._id && getMessageDetails();
   }, [person._id, conversation._id, newMessageFlag]);
 
-  const sendText =async(e) => {
+
+  ///scroll to down
+  useEffect(()=>{
+     scrollRef.current?.scrollIntoView({ transition: "smooth" });
+  },[message])
+  const sendText = async (e) => {
     console.log(e);
     let code = e.keyCode || e.which;
     if (code === 13) {
-      let message = {
-        senderId: account.sub,
-        receiverId: person.sub,
-        conversationId: conversation._id,
-        type: "text",
-        text: value,
-      };
+      let message;
+      if (!file) {
+        message = {
+          senderId: account.sub,
+          receiverId: person.sub,
+          conversationId: conversation._id,
+          type: "text",
+          text: value,
+        };
+      } else {
+        message = {
+          senderId: account.sub,
+          receiverId: person.sub,
+          conversationId: conversation._id,
+          type: "file",
+          text: image,
+        };
+      }
       await newMessage(message);
-      setValue('')
-      setNewMessageFlag(prev=>!prev)
+      setValue("");
+      setValue("");
+      setImage("");
+      setNewMessageFlag((prev) => !prev);
       console.log(message);
     }
   };
@@ -55,12 +78,19 @@ const Messages = ({ person, conversation }) => {
       <Componenet>
         {message &&
           message.map((message) => (
-            <Container>
+            <Container ref={scrollRef}>
               <Message message={message} />
             </Container>
           ))}
       </Componenet>
-      <Footer sendText={sendText} setValue={setValue} value={value} />
+      <Footer
+        sendText={sendText}
+        setValue={setValue}
+        value={value}
+        file={file}
+        setFile={setFile}
+        setImage={setImage}
+      />
     </Wrapper>
   );
 };
