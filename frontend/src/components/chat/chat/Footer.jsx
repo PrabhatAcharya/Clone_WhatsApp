@@ -1,5 +1,4 @@
 import { Box, InputBase, styled } from "@mui/material";
-import React from "react";
 import SentimentSatisfiedOutlinedIcon from "@mui/icons-material/SentimentSatisfiedOutlined";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import MicNoneIcon from "@mui/icons-material/MicNone";
@@ -26,20 +25,25 @@ const InputField = styled(InputBase)`
   width: 100%;
   padding: 20px;
   height: 20px;
-  padding-left:25px;
+  padding-left: 25px;
   font-size: 14px;
 `;
-const Rotate=styled(AttachFileIcon)`
-transform: rotate(40deg);
-`
+const Rotate = styled(AttachFileIcon)`
+  transform: rotate(40deg);
+`;
 
-const Footer = () => {
+const Footer = ({ sendText, setValue,value }) => {
   return (
     <Container>
       <SentimentSatisfiedOutlinedIcon />
       <Rotate />
       <Search>
-        <InputField placeholder="Type a Message" />
+        <InputField
+          placeholder="Type a Message"
+          onChange={(e) => setValue(e.target.value)}
+          onKeyPress={(e) => sendText(e)}
+          value={value}
+        />
       </Search>
       <MicNoneIcon />
     </Container>
