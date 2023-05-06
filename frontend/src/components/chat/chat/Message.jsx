@@ -92,7 +92,8 @@ const ImageMessage = ({ message }) => {
   );
 };
 
-const TextMessage = (message) => {
+const TextMessage = ({message}) => {
+  console.log("MeraWalalaText", message);
   return (
     <>
       <Text>{message.text}</Text>

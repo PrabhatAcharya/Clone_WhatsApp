@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect,useRef } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
 import Footer from "./Footer";
@@ -17,16 +17,36 @@ const Componenet = styled(Box)`
 const Container = styled(Box)`
   padding: 1px 80px;
 `;
+
+
+
 const Messages = ({ person, conversation }) => {
-  const { account } = useContext(AccountContext);
+  const { account, socket, setNewMessageFlag, newMessageFlag } =
+    useContext(AccountContext);
   const [value, setValue] = useState("");
   const [message, setMessage] = useState([]);
-  const [newMessageFlag, setNewMessageFlag] = useState(false);
 
-  const scrollRef=useRef();
+
+  const scrollRef = useRef();
 
   const [file, setFile] = useState();
   const [image, setImage] = useState("");
+    const [incommingMessage, setIncommingMessage] = useState("");
+
+
+
+   useEffect(() => {
+     socket.current.on("getMessage", data=>{
+      setIncommingMessage({
+        ...data,
+        createdAt:Date.now(),
+      });
+     });
+   }, []);
+
+   useEffect(() =>{
+incommingMessage && conversation?.members?.includes(incommingMessage.senderId) && setMessage(prev=>[...prev,incommingMessage])
+   },[incommingMessage,conversation]);
 
   useEffect(() => {
     const getMessageDetails = async () => {
@@ -34,14 +54,14 @@ const Messages = ({ person, conversation }) => {
       console.log(data);
       setMessage(data);
     };
-    conversation._id && getMessageDetails();
+     conversation._id && getMessageDetails();
   }, [person._id, conversation._id, newMessageFlag]);
 
-
   ///scroll to down
-  useEffect(()=>{
-     scrollRef.current?.scrollIntoView({ transition: "smooth" });
-  },[message])
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ transition: "smooth" });
+  }, [message]);
+  
   const sendText = async (e) => {
     console.log(e);
     let code = e.keyCode || e.which;
@@ -64,12 +84,14 @@ const Messages = ({ person, conversation }) => {
           text: image,
         };
       }
+
+      socket.current.emit('sendMessage',message);
       await newMessage(message);
+      console.log("Mymessage", message);
       setValue("");
       setValue("");
       setImage("");
       setNewMessageFlag((prev) => !prev);
-      console.log(message);
     }
   };
 
